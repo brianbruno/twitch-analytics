@@ -31,14 +31,14 @@ class EvolucaoTopGames extends Chart {
 
         $games = DB::select("
         SELECT dt.name, dt.id_run, dt.viewers
-        FROM data_topgames dt, (SELECT data_runs.id FROM data_runs ORDER BY date DESC LIMIT 250) dr
+        FROM data_topgames dt, (SELECT data_runs.id FROM data_runs ORDER BY date DESC LIMIT 100) dr
         WHERE dt.id_run = dr.id
         ORDER BY dt.name, dt.id_run");
 
         $dataSets = [];
         $labels = [];
 
-        $labelsSelect = array_reverse(DB::select("SELECT DATE_FORMAT(date, '%d/%m/%Y %H:%i:%s') data FROM data_runs ORDER BY date DESC LIMIT 250"));
+        $labelsSelect = array_reverse(DB::select("SELECT DATE_FORMAT(date, '%d/%m/%Y %H:%i:%s') data FROM data_runs ORDER BY date DESC LIMIT 100"));
 
         foreach ($games as $jogo) {
             $this->addNovoDataSet($dataSets, $jogo);
