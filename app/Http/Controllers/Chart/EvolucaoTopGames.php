@@ -30,11 +30,25 @@ class EvolucaoTopGames extends Chart {
 //        $games = TopGame::limit(25)->get();
 
         $games = DB::select("
-        SELECT dl.value name, dt.id_run, dt.viewers
-        FROM data_topgames dt, (SELECT data_runs.id FROM data_runs WHERE task = 'twitch:topgames' ORDER BY date DESC LIMIT 100) dr, data_labels dl
-        WHERE dt.id_run = dr.id
-        AND dl.id = dt.id_name
-        ORDER BY dl.value, dt.id_run");
+        SELECT X.id, X.name, DATE_FORMAT(X.date, '%d/%m/%Y %H:%i:%s') data, X.viewers viewers
+        FROM (SELECT dr.id, value name, dr.date, dt.viewers viewers
+               FROM data_labels dl, (SELECT data_runs.id, data_runs.date FROM data_runs WHERE task = 'twitch:topgames' ORDER BY date DESC LIMIT 100) dr
+                                      LEFT JOIN data_topgames dt
+                                                on dt.id_run = dr.id
+               WHERE dl.name = 'game_name'
+                 AND dl.value <> ''
+                 AND dt.id_name = dl.id
+                 AND (SELECT COUNT(id) FROM data_topgames WHERE dl.id = data_topgames.id_name) 
+        
+               UNION ALL
+        
+               SELECT dr.id, value name, dr.date, null viewers
+               FROM data_labels dl, (SELECT data_runs.id, data_runs.date FROM data_runs WHERE task = 'twitch:topgames' ORDER BY date DESC LIMIT 100) dr
+               WHERE dl.name = 'game_name'
+                 AND dl.value <> ''
+                 AND (SELECT COUNT(id) FROM data_topgames WHERE dl.id = data_topgames.id_name)
+                 AND NOT EXISTS(SELECT id FROM data_topgames WHERE data_topgames.id_run = dr.id AND data_topgames.id_name = dl.id)) X
+        ORDER BY X.date");
 
         $dataSets = [];
         $labels = [];
