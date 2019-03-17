@@ -18,3 +18,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::namespace('Chart')->group(function () {
+
+    Route::prefix('chart')->group(function () {
+        Route::get('evolucaotopgames', 'EvolucaoTopGames@find');
+    });
+
+});
