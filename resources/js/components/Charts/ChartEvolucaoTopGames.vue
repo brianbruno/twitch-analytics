@@ -7,8 +7,9 @@
             return {
                 datacollection: null,
                 options: {
+                    animation: false,
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
                 }
             }
         },
@@ -37,8 +38,12 @@
                     .then(function () {
                         setTimeout(function () {
                             self.getData();
-                        }, 60000)
+                        }, 120000)
                     });
+            },
+            onClickChart(evt) {
+                const self = this;
+                return function (evt) { self.onClickSave(evt, self) };
             }
         }
     }

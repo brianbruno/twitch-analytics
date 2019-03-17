@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Data\Label;
 use App\Models\Data\Run;
 use App\Models\Data\TopGame;
 use App\Twitch;
@@ -50,9 +51,9 @@ class BuscarTopGames extends Command
 
         foreach ($top as $row) {
             $topGame = new TopGame();
-            $topGame->name = $row->game->name;
+            $topGame->id_name = Label::getIdLabel('game_name', $row->game->name);
             $topGame->viewers = $row->viewers;
-            $topGame->locale = $row->game->locale;
+            $topGame->id_locale = Label::getIdLabel('game_locale', $row->game->locale);
             $topGame->id_run = $run->id;
             $topGame->save();
         }

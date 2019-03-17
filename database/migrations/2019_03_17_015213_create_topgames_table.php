@@ -15,13 +15,15 @@ class CreateTopgamesTable extends Migration
     {
         Schema::create('data_topgames', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 255);
+            $table->bigInteger('id_name')->unsigned();
             $table->integer('viewers');
-            $table->string('locale', 20);
+            $table->bigInteger('id_locale')->unsigned();
             $table->bigInteger('id_run')->unsigned();
             $table->timestamps();
 
             $table->foreign('id_run')->references('id')->on('data_runs');
+            $table->foreign('id_name')->references('id')->on('data_labels');
+            $table->foreign('id_locale')->references('id')->on('data_labels');
         });
     }
 

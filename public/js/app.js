@@ -1771,6 +1771,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       datacollection: null,
       options: {
+        animation: false,
         responsive: true,
         maintainAspectRatio: false
       }
@@ -1796,8 +1797,14 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function () {
         setTimeout(function () {
           self.getData();
-        }, 60000);
+        }, 120000);
       });
+    },
+    onClickChart: function onClickChart(evt) {
+      var self = this;
+      return function (evt) {
+        self.onClickSave(evt, self);
+      };
     }
   }
 });

@@ -30,10 +30,11 @@ class EvolucaoTopGames extends Chart {
 //        $games = TopGame::limit(25)->get();
 
         $games = DB::select("
-        SELECT dt.name, dt.id_run, dt.viewers
-        FROM data_topgames dt, (SELECT data_runs.id FROM data_runs ORDER BY date DESC LIMIT 100) dr
+        SELECT dl.value name, dt.id_run, dt.viewers
+        FROM data_topgames dt, (SELECT data_runs.id FROM data_runs ORDER BY date DESC LIMIT 100) dr, data_labels dl
         WHERE dt.id_run = dr.id
-        ORDER BY dt.name, dt.id_run");
+        AND dl.id = dt.id_name
+        ORDER BY dl.value, dt.id_run");
 
         $dataSets = [];
         $labels = [];
@@ -72,6 +73,7 @@ class EvolucaoTopGames extends Chart {
             $dataSets[] = array(
                 'label' => $jogo->name,
                 'borderColor' => parent::getBackgroundColor($jogo->name),
+                'hidden' => false,
                 'data'  => array($viewers)
             );
         }
