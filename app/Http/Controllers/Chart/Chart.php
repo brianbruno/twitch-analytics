@@ -19,12 +19,13 @@ abstract class Chart {
 
     public function getBackgroundColor($name) {
 
-        try {
+        /*try {
             $cor = $this->defaultColors[$this->contador];
             $this->contador++;
         } catch (\Exception $e) {
             $cor = $this->random_color();
-        }
+        }*/
+        $cor = $this->random_color();
 
         return $cor;
     }
