@@ -19,7 +19,8 @@ class Requisicao {
         $headers = ['headers' => [
             'Origin' => 'http://brian.place',
             'Accept-Charset' => 'application/x-www-form-urlencoded; charset=UTF-8',
-            "Accept-Language" => "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+            'Accept-Language' => 'pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept'    => 'application/vnd.twitchtv.v5+json',
             'Client-ID' => $twitchID ]
         ];
 

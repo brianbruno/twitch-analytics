@@ -26,7 +26,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('twitch:topgames')->everyMinute();
+        $schedule->command('twitch:topgames')->everyFiveMinutes();
+        $schedule->command('twitch:streamsonline')->everyFiveMinutes();
     }
 
     /**

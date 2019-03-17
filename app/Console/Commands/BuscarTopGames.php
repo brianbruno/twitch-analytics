@@ -41,6 +41,7 @@ class BuscarTopGames extends Command
     public function handle() {
         $run = new Run();
         $run->note = "Twitch Analytics";
+        $run->task = $this->signature;
         $run->save();
 
         $twitch = new Twitch();

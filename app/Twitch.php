@@ -20,4 +20,13 @@ class Twitch {
 
         return $resultado;
     }
+
+    public function getStreams() {
+        $url = "https://api.twitch.tv/kraken/streams?language=pt-br&stream_type=live";
+
+        $requisicao = new Requisicao();
+        $resultado = $requisicao->get($url);
+
+        return $resultado;
+    }
 }

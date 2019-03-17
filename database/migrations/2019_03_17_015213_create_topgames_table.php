@@ -22,7 +22,7 @@ class CreateTopgamesTable extends Migration
             $table->timestamps();
 
             $table->foreign('id_run')->references('id')->on('data_runs');
-            $table->foreign('id_name')->references('id')->on('data_labels');
+            $table->foreign('id_name')->references('id')->on('data_channels');
             $table->foreign('id_locale')->references('id')->on('data_labels');
         });
     }

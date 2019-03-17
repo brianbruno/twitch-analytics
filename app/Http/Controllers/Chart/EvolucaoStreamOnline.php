@@ -12,29 +12,19 @@ use App\Models\Data\Run;
 use App\Models\Data\TopGame;
 use Illuminate\Support\Facades\DB;
 
-class EvolucaoTopGames extends Chart {
-
-
-    /**
-     * EvolucaoTopGames constructor.
-     */
-    public function __construct() {
-
-        setlocale(LC_ALL, "pt_BR", "pt_BR.iso-8859-1", "pt_BR.utf-8", "portuguese");
-        date_default_timezone_set('America/Sao_Paulo');
-
-    }
+class EvolucaoStreamOnline extends Chart {
 
     public function find() {
 //        $run =  Run::find(DB::table('data_runs')->max('id'));
 //        $games = TopGame::limit(25)->get();
 
         $games = DB::select("
-        SELECT dl.value name, dt.id_run, dt.viewers
-        FROM data_topgames dt, (SELECT data_runs.id FROM data_runs WHERE task = 'twitch:topgames' ORDER BY date DESC LIMIT 100) dr, data_labels dl
-        WHERE dt.id_run = dr.id
-        AND dl.id = dt.id_name
-        ORDER BY dl.value, dt.id_run");
+        SELECT dc.display_name, dl.value, dso.viewers, DATE_FORMAT(dso.created_at, '%d/%m/%Y %H:%i:%s') data
+        FROM data_streamsonline dso, (SELECT data_runs.id FROM data_runs WHERE data_runs.task = 'twitch:streamsonline' ORDER BY date DESC LIMIT 50) dr,
+             (SELECT * FROM data_labels) dl, (SELECT * FROM data_channels) dc
+        WHERE dso.id_run = dr.id
+        AND dl.id = dso.id_game
+        AND dc.id = dso.id_channel");
 
         $dataSets = [];
         $labels = [];
