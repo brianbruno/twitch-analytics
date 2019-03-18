@@ -26,3 +26,6 @@ Route::namespace('Chart')->group(function () {
     });
 
 });
+
+Route::get('ml/channel/', 'HomeController@mlChannel')->name('previsao');
+Route::get('ml/channel/{id}', 'HomeController@mlChannelFind')->name('resultado-previsao');

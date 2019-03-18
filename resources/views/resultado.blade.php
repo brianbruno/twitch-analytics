@@ -5,25 +5,14 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Dashboard</div>
+                <div class="card-header">Resultado</div>
 
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <chart-evulucaotopgames></chart-evulucaotopgames>
-                        </div>
-                    </div>
                     <div class="row justify-content-center">
-                        <a href="{{ route('previsao') }}">Previsao</a>
+                        <a href="{{ route('previsao') }}">Voltar</a>
                     </div>
-                    <div class="row justify-content-center">
 
+                    <div class="row justify-content-center">
                         <table>
                             <thead>
                             <tr>
