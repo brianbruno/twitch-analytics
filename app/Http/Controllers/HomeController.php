@@ -78,7 +78,7 @@ class HomeController extends Controller
         $retorno = [];
 
         $resultados = DB::select("
-            SELECT data_labels.id IDGAME, value name, data_channels.id IDCHANNEL, data_channels.display_name NMCHANNEL, 1 as IDTIME
+            SELECT data_labels.id IDGAME, value name, data_channels.id IDCHANNEL, data_channels.display_name NMCHANNEL
             FROM data_labels, data_channels
             WHERE data_labels.name = 'game_name'
             AND value IS NOT NULL
@@ -88,22 +88,38 @@ class HomeController extends Controller
         foreach ($resultados as $resultado) {
             $IDGAME = $resultado->IDGAME;
             $IDCHANNEL = $resultado->IDCHANNEL;
-            $IDTIME = $resultado->IDTIME;
+            $IDTIME = 0;
             $NMCHANNEL = $resultado->NMCHANNEL;
 
-            $url = "http://127.0.0.1:5000/dataset?IDGAME=".$IDGAME."&IDCHANNEL=".$IDCHANNEL."&IDTIME=".$IDTIME;
-
-            $client = new Client();
-            $response = $client->request('GET', $url);
-            $valor = $response->getBody()->getContents();
+            $valor = $this->mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDTIME);
 
             $retorno[] = array(
-                'game' => $resultado->name,
+                'game' => $resultado->name." - AM",
+                'streamer' => $NMCHANNEL,
+                'visualizacoes' => $valor
+            );
+            
+            $IDTIME = 1;
+            
+            $valor = $this->mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDTIME);
+
+            $retorno[] = array(
+                'game' => $resultado->name." - PM",
                 'streamer' => $NMCHANNEL,
                 'visualizacoes' => $valor
             );
         }
 
         return view('resultado', ['previsoes' => $retorno]);
+    }
+    
+    public function mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDTIME) {
+        $url = "http://127.0.0.1:5000/dataset?IDGAME=".$IDGAME."&IDCHANNEL=".$IDCHANNEL."&IDTIME=".$IDTIME;
+
+        $client = new Client();
+        $response = $client->request('GET', $url);
+        $valor = $response->getBody()->getContents();
+        
+        return $valor;
     }
 }

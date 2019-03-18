@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
         $schedule->command('twitch:topgames')->everyFiveMinutes();
         $schedule->command('twitch:streamsonline')->everyFiveMinutes();
+        $schedule->command('gerar:dataset')->everyFifteenMinutes();
     }
 
     /**

@@ -39,8 +39,9 @@ class GerarDataset extends Command
      */
     public function handle() {
         $streams = StreamOnline::all();
+        $arquivoArray = [];
 
-        Storage::disk('local')->delete('dataset.txt');
+//        Storage::disk('local')->delete('dataset.txt');
 
         foreach ($streams as $stream) {
             $date = \DateTime::createFromFormat('Y-m-d H:i:s', $stream->created_at);
@@ -51,10 +52,12 @@ class GerarDataset extends Command
             } else {
                 $hora = 1;
             }
-            $string = $stream->id_game.";".$stream->id_channel.";".$hora.";".$stream->viewers.";";
-
-            Storage::disk('local')->append('dataset.txt', $string);
+            $string = $stream->id_game.";".$stream->id_channel.";".$hora.";".$stream->viewers.";".PHP_EOL;
+            $arquivoArray[] = $string;
+//            Storage::disk('local')->append('dataset.txt', $string);
 
         }
+        
+        Storage::disk('local')->put('dataset.txt', $arquivoArray);
     }
 }
