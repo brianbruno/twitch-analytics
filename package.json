@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.9"
     },
     "dependencies": {
+        "bootstrap-select": "^1.13.8",
         "chart.js": "^2.8.0",
         "vue-chartjs": "^3.4.0"
     }

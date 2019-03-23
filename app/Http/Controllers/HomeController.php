@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Data\Channel;
+use App\Models\MachineLearning\StreamGames;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Client;
@@ -48,16 +49,14 @@ class HomeController extends Controller
             LIMIT 10");
 
         foreach ($resultados as $resultado) {
+
             $IDGAME = $resultado->IDGAME;
             $IDCHANNEL = $resultado->IDCHANNEL;
-            $IDTIME = $resultado->IDTIME;
+            $IDHORA = date('G');
             $NMCHANNEL = $resultado->NMCHANNEL;
+            $IDDIASEMANA = date('w');
 
-            $url = "http://127.0.0.1:5000/dataset?IDGAME=".$IDGAME."&IDCHANNEL=".$IDCHANNEL."&IDTIME=".$IDTIME;
-
-            $client = new Client();
-            $response = $client->request('GET', $url);
-            $valor = $response->getBody()->getContents();
+            $valor = $this->mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDHORA, $IDDIASEMANA);
 
             $retorno[] = array(
                 'game' => $resultado->name,
@@ -75,6 +74,8 @@ class HomeController extends Controller
     }
 
     public function mlChannelFind($id) {
+        set_time_limit(300);
+
         $retorno = [];
 
         $resultados = DB::select("
@@ -85,36 +86,46 @@ class HomeController extends Controller
             AND value <> ''
             AND data_channels.id = ".$id);
 
+        $tInicial = time();
         foreach ($resultados as $resultado) {
             $IDGAME = $resultado->IDGAME;
             $IDCHANNEL = $resultado->IDCHANNEL;
-            $IDTIME = 0;
+            $IDHORA = date('G');
             $NMCHANNEL = $resultado->NMCHANNEL;
+            $IDDIASEMANA = date('w');
 
-            $valor = $this->mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDTIME);
-
-            $retorno[] = array(
-                'game' => $resultado->name." - AM",
-                'streamer' => $NMCHANNEL,
-                'visualizacoes' => $valor
-            );
-            
-            $IDTIME = 1;
-            
-            $valor = $this->mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDTIME);
+            $valor = $this->mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDHORA, $IDDIASEMANA);
 
             $retorno[] = array(
-                'game' => $resultado->name." - PM",
+                'game' => $resultado->name,
                 'streamer' => $NMCHANNEL,
                 'visualizacoes' => $valor
             );
         }
 
-        return view('resultado', ['previsoes' => $retorno]);
+        $tFinal = time();
+        return view('resultado', ['previsoes' => $retorno, 'tempo' => $tFinal-$tInicial]);
+    }
+
+    public function mlChannelFindApi(Request $request) {
+        $idChannel = $request->channel;
+        /*$status = true;
+        $resultado = StreamGames::where('idChannel', '=', $idChannel)->get();
+
+        if (empty($resultado))
+            $status = false;
+
+        return response()->json([
+            'resultado' => $resultado,
+            'status'  => $status,
+        ], 200);*/
+
+        return redirect()->route('resultado-previsao', ['id' => $idChannel]);
+
     }
     
-    public function mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDTIME) {
-        $url = "http://127.0.0.1:5000/dataset?IDGAME=".$IDGAME."&IDCHANNEL=".$IDCHANNEL."&IDTIME=".$IDTIME;
+    public function mlChannelFindRequest($IDGAME, $IDCHANNEL, $IDHORA, $IDDIASEMANA) {
+        $url = "http://127.0.0.1:5000/dataset?IDGAME=".$IDGAME."&IDCHANNEL=".$IDCHANNEL."&IDHORA=".$IDHORA."&IDDIASEMANA=".$IDDIASEMANA;
 
         $client = new Client();
         $response = $client->request('GET', $url);
